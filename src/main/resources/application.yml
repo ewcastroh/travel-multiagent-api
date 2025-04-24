@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: travelconcierge
+
+langchain:
+  llm-provider: openai # or ollama
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+  model-name: gpt-4o-mini
+
+ollama:
+  base-url: http://localhost:11434
+  model-name: llama3.1:8b
+
+langchain4j:
+  open-ai:
+    chat-model:
+      # api-key: demo
+      # model-name: gpt-4o-mini
+      log-requests: true
+      log-responses: true
