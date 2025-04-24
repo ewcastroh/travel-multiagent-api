@@ -1,14 +1,14 @@
 package com.travelconcierge.agents;
 
 import com.travelconcierge.dto.AgentResponse;
-import dev.langchain4j.service.SystemMessage;
+import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import dev.langchain4j.service.spring.AiService;
 
 @AiService
 public interface FlightFinderAgent {
 
-    @SystemMessage("""
+    @UserMessage("""
             Return a bullet-point list of 2–3 top flight options from {{origin}} to {{destination}} from {{startDate}} to {{endDate}} for {{peopleCount}} people:
             - Include Airline, Departure Time, Stops, and Price
             - Format each line as: Airline – Departure – Stops – Price

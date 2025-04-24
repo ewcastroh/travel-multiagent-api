@@ -1,22 +1,25 @@
 spring:
   application:
     name: travelconcierge
+  threads:
+    virtual:
+      enabled: true
 
-langchain:
-  llm-provider: openai # or ollama
-
-openai:
-  api-key: ${OPENAI_API_KEY}
-  model-name: gpt-4o-mini
-
-ollama:
-  base-url: http://localhost:11434
-  model-name: llama3.1:8b
-
+### LangChain4J Configuration for OpenAI Chat Model
 langchain4j:
   open-ai:
     chat-model:
-      # api-key: demo
-      # model-name: gpt-4o-mini
+      api-key: ${OPENAI_API_KEY}
+      model-name: gpt-4o-mini
       log-requests: true
       log-responses: true
+      # temperature=0.0
+
+  ### LangChain4J Configuration for Ollama and DeepSeek R1 Chat Model
+  #ollama:
+  #  chat-model:
+  #    base-url: http://localhost:11434
+  #    model-name: llama3.1:8b / deepseek-r1
+  #    log-requests: true
+  #    log-responses: true
+  #    # temperature=0.0

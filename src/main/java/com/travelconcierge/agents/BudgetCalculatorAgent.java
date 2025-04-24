@@ -1,7 +1,7 @@
 package com.travelconcierge.agents;
 
 import com.travelconcierge.dto.AgentResponse;
-import dev.langchain4j.service.SystemMessage;
+import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import dev.langchain4j.service.spring.AiService;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @AiService
 public interface BudgetCalculatorAgent {
 
-    @SystemMessage("""
+    @UserMessage("""
             You are a budget calculation agent.
             You will be given:
             - The total budget: ${{budget}} (for reference)

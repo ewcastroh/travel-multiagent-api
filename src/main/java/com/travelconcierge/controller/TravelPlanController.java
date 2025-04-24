@@ -1,12 +1,17 @@
 package com.travelconcierge.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.travelconcierge.agents.IntentClarifierAgent;
 import com.travelconcierge.dto.TravelPlanResponseDto;
 import com.travelconcierge.dto.TravelRequestDto;
+import com.travelconcierge.dto.UserMessageRequestDto;
 import com.travelconcierge.service.TravelPlannerService;
+import dev.langchain4j.service.Result;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,13 +19,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class TravelPlanController {
 
     private final TravelPlannerService plannerService;
+    private final IntentClarifierAgent intentClarifier;
+    private final ObjectMapper objectMapper;
 
-    public TravelPlanController(TravelPlannerService plannerService) {
+    public TravelPlanController(TravelPlannerService plannerService, IntentClarifierAgent intentClarifier, ObjectMapper objectMapper) {
         this.plannerService = plannerService;
+        this.intentClarifier = intentClarifier;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping("/plan")
     public ResponseEntity<TravelPlanResponseDto> planTrip(@RequestBody TravelRequestDto request) {
         return ResponseEntity.ok(plannerService.planTrip(request));
+    }
+
+    /**
+     * Accepts user messages and tries to extract a complete travel plan.
+     */
+    @PostMapping("/clarify")
+    public ResponseEntity<?> handleClarification(@RequestParam String sessionId,
+                                                 @RequestBody UserMessageRequestDto userMessage) {
+        Result<String> result = intentClarifier.handleUserMessage(sessionId, userMessage.message());
+        String content = result.content();
+
+        try {
+            TravelRequestDto travelRequest = objectMapper.readValue(content, TravelRequestDto.class);
+            TravelPlanResponseDto plan = plannerService.planTrip(travelRequest);
+            return ResponseEntity.ok(plan);
+        } catch (Exception ex) {
+            // Not a valid TravelRequestDto yet — continue the conversation
+            return ResponseEntity.ok(content);
+        }
     }
 }

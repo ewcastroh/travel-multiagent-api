@@ -10,7 +10,6 @@ public record TravelRequestDto(
         LocalDate endDate,
         BigDecimal budget,
         String travelType,
-        int peopleCount,
-        String preferredHotelClass
+        int peopleCount
 ) {
 }
