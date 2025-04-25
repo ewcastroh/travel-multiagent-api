@@ -16,9 +16,6 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 public class TravelPlannerService {
@@ -29,7 +26,6 @@ public class TravelPlannerService {
     private final BudgetCalculatorAgent budgetCalculator;
     private final BudgetEvaluatorAgent budgetEvaluator;
     private final ItineraryBuilderAgent itineraryBuilder;
-    private final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
     public TravelPlannerService(FlightFinderAgent flightFinder,
                                 HotelBookerAgent hotelBooker,
@@ -48,40 +44,24 @@ public class TravelPlannerService {
     public TravelPlanResponseDto planTrip(TravelRequestDto request) {
         Map<String, String> rationales = new LinkedHashMap<>();
 
-        CompletableFuture<AgentResponse> flightFuture = CompletableFuture.supplyAsync(() ->
-                        flightFinder.findFlights(request.origin(), request.destination(),
-                                request.startDate().toString(), request.endDate().toString(), request.peopleCount()),
-                executor);
-
-        CompletableFuture<AgentResponse> hotelFuture = CompletableFuture.supplyAsync(() ->
-                        hotelBooker.findHotels(request.destination(),
-                                request.startDate().toString(), request.endDate().toString(), request.peopleCount()),
-                executor);
-
-        CompletableFuture<AgentResponse> weatherFuture = CompletableFuture.supplyAsync(() ->
-                        weatherAdvisor.forecast(request.destination(),
-                                request.startDate().toString(), request.endDate().toString()),
-                executor);
-
-        CompletableFuture<AgentResponse> itineraryFuture = CompletableFuture.supplyAsync(() ->
-                        itineraryBuilder.planItinerary(request.destination(),
-                                request.startDate().toString(), request.endDate().toString(), request.travelType(),
-                                request.peopleCount()),
-                executor);
-
-        AgentResponse flightsResponse = flightFuture.join();
+        AgentResponse flightsResponse = flightFinder.findFlights(request.origin(), request.destination(),
+                request.startDate().toString(), request.endDate().toString(), request.peopleCount());
         List<String> flightsDecision = ResponseMapperUtil.toList(flightsResponse.decision().toString());
         rationales.put("FlightFinder", flightsResponse.rationale());
 
-        AgentResponse hotelsResponse = hotelFuture.join();
+        AgentResponse hotelsResponse = hotelBooker.findHotels(request.destination(),
+                request.startDate().toString(), request.endDate().toString(), request.peopleCount());
         List<String> hotelsDecision = ResponseMapperUtil.toList(hotelsResponse.decision().toString());
         rationales.put("HotelBooker", hotelsResponse.rationale());
 
-        AgentResponse weatherResponse = weatherFuture.join();
+        AgentResponse weatherResponse = weatherAdvisor.forecast(request.destination(),
+                request.startDate().toString(), request.endDate().toString());
         String weatherForecastDecision = weatherResponse.decision().toString();
         rationales.put("WeatherAdvisor", weatherResponse.rationale());
 
-        AgentResponse itineraryResponse = itineraryFuture.join();
+        AgentResponse itineraryResponse = itineraryBuilder.planItinerary(request.destination(),
+                request.startDate().toString(), request.endDate().toString(), request.travelType(),
+                request.peopleCount());
         List<String> itineraryDecision = ResponseMapperUtil.toList(itineraryResponse.decision().toString());
         rationales.put("ItineraryBuilder", itineraryResponse.rationale());
 

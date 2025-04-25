@@ -3,15 +3,19 @@ package com.travelconcierge.tools;
 import dev.langchain4j.agent.tool.Tool;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class FlightSearchMockTool {
 
     @Tool(name = "findFlights")
-    public String findFlights(String origin, String destination, String startDate, String endDate, int peopleCount) {
-        return String.format("""
-                Found 2 mock flights from %s to %s between %s and %s for %d traveler(s):
-                - Airlines: $620, Direct, Departs 10:30 AM
-                - AeroTravel: $540, 1 Stop (MIA), Departs 2:15 PM
-                """, origin, destination, startDate, endDate, peopleCount);
+    public List<String> findFlights(String origin, String destination, String startDate, String endDate, int peopleCount) {
+        return List.of(
+                "AirComfort - Medellin - 10:30 AM - Direct - $620",
+                "SkyHigh Airlines - Medellin - 11:00 AM - 1 Stop - $580",
+                "JetSetters - Medellin - 12:00 PM - Direct - $600",
+                "CloudNine - Medellin - 1:00 PM - 2 Stops - $550",
+                "AirWaves - Medellin - 2:00 PM - Direct - $630"
+        );
     }
 }

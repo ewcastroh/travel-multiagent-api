@@ -13,6 +13,7 @@ public interface ItineraryBuilderAgent {
             - Label each line as Day 1, Day 2, etc.
             - Include 2–3 activities per day.
             - Do not include commentary, just the list.
+            - Return only the list of activities — no other information like flights, hotels, or weather.
             """)
     AgentResponse planItinerary(@V("destination") String destination, @V("startDate") String startDate,
                                 @V("endDate") String endDate, @V("travelType") String travelType,
