@@ -2,6 +2,7 @@ package com.travelconcierge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travelconcierge.agents.IntentClarifierAgent;
+import com.travelconcierge.dto.SimpleTextResponseDto;
 import com.travelconcierge.dto.TravelPlanResponseDto;
 import com.travelconcierge.dto.TravelRequestDto;
 import com.travelconcierge.dto.UserMessageRequestDto;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/travel")
+@RequestMapping("/api/v1/travel")
 public class TravelPlanController {
 
     private final TravelPlannerService plannerService;
@@ -36,7 +37,7 @@ public class TravelPlanController {
     /**
      * Accepts user messages and tries to extract a complete travel plan.
      */
-    @PostMapping("/clarify")
+    @PostMapping("/chat")
     public ResponseEntity<?> handleClarification(@RequestParam String sessionId,
                                                  @RequestBody UserMessageRequestDto userMessage) {
         Result<String> result = intentClarifier.handleUserMessage(sessionId, userMessage.message());
@@ -48,7 +49,7 @@ public class TravelPlanController {
             return ResponseEntity.ok(plan);
         } catch (Exception ex) {
             // Not a valid TravelRequestDto yet — continue the conversation
-            return ResponseEntity.ok(content);
+            return ResponseEntity.ok(new SimpleTextResponseDto(content));
         }
     }
 }
