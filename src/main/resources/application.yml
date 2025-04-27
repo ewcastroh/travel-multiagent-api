@@ -1,9 +1,6 @@
 spring:
   application:
-    name: travelconcierge
-  threads:
-    virtual:
-      enabled: true
+    name: travel-multiagent-api
 
 ### LangChain4J Configuration for OpenAI Chat Model
 langchain4j:
@@ -13,7 +10,7 @@ langchain4j:
       model-name: gpt-4o-mini
       log-requests: true
       log-responses: true
-      # temperature=0.0
+      temperature: 0.4
 
   ### LangChain4J Configuration for Ollama and DeepSeek R1 Chat Model
   #ollama:
@@ -22,4 +19,4 @@ langchain4j:
   #    model-name: llama3.1:8b / deepseek-r1
   #    log-requests: true
   #    log-responses: true
-  #    # temperature=0.0
+  #    temperature: 0.4

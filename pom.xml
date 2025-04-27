@@ -8,11 +8,11 @@
 		<version>3.4.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.travelconcierge</groupId>
-	<artifactId>travelconcierge</artifactId>
+	<groupId>com.travel.multiagent.api</groupId>
+	<artifactId>travel-multiagent-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>travelconcierge</name>
-	<description>AI-Powered Personal Travel Concierge</description>
+	<name>travel-multiagent-api</name>
+	<description>AI-Powered Personal Travel Planner using Multi-Agents</description>
 	<url/>
 	<licenses>
 		<license/>
